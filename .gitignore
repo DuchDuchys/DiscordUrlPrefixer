@@ -1,0 +1,19 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.dll
+*.exe
+*.pdb
+.vs/
+
+## IDE
+.idea/
+*.swp
+*~
+
+## Environment
+.env
+appsettings.Development.json
