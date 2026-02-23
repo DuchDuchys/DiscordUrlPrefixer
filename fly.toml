@@ -1,1 +1,12 @@
-app = 'discordurlprefixer' primary_region = 'iad' [build] [processes] app = 'dotnet DiscordUrlPrefixer.dll' [[vm]] memory = '1gb' cpu_kind = 'shared' cpus = 1 memory_mb = 1024
+app = "discordurlprefixer"
+primary_region = "iad"
+
+[build]
+
+[processes]
+  app = "dotnet DiscordUrlPrefixer.dll"
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 1024
