@@ -64,22 +64,24 @@ public class Program
         if (message.Author.IsBot)
             return;
 
-        var matches = UrlPrefixer.ExtractAndPrefix(message.Content);
-        if (matches.Count == 0)
+        var (transformedMessage, hadMatches) = UrlPrefixer.ReplaceUrls(message.Content);
+        if (!hadMatches)
             return;
 
-        // Try to suppress the original embeds (requires ManageMessages permission)
+        var authorName = (message.Author as SocketGuildUser)?.DisplayName
+                         ?? message.Author.GlobalName
+                         ?? message.Author.Username;
+
         try
         {
-            if (message is IUserMessage userMessage)
-                await userMessage.ModifyAsync(m => m.Flags = MessageFlags.SuppressEmbeds);
+            await message.DeleteAsync();
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Could not suppress embeds (missing ManageMessages permission?): {ex.Message}");
+            Console.WriteLine($"Could not delete message (missing ManageMessages permission?): {ex.Message}");
+            return;
         }
 
-        var reply = string.Join('\n', matches.Select(m => m.Prefixed));
-        await message.Channel.SendMessageAsync(reply, messageReference: new MessageReference(message.Id));
+        await message.Channel.SendMessageAsync($"**{authorName}:** {transformedMessage}");
     }
 }

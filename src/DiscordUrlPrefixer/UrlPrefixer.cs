@@ -16,23 +16,21 @@ public static partial class UrlPrefixer
     [GeneratedRegex(@"^(https?://(?:www\.)?)")]
     private static partial Regex SchemePrefix();
 
-    public static List<(string Original, string Prefixed)> ExtractAndPrefix(string message)
+    public static (string TransformedMessage, bool HadMatches) ReplaceUrls(string message)
     {
-        var results = new List<(string Original, string Prefixed)>();
+        var hadMatches = false;
+        var result = message;
 
         foreach (var pattern in new[] { InstagramPattern(), TikTokPattern() })
         {
-            foreach (Match match in pattern.Matches(message))
+            var replaced = pattern.Replace(result, match =>
             {
-                var original = match.Value;
-                // Insert "kk" after the scheme+www prefix, before the domain name
-                // e.g. https://www.instagram.com/... → https://www.kkinstagram.com/...
-                //      https://tiktok.com/...       → https://kktiktok.com/...
-                var prefixed = SchemePrefix().Replace(original, "$1kk", 1);
-                results.Add((original, prefixed));
-            }
+                hadMatches = true;
+                return SchemePrefix().Replace(match.Value, "$1kk", 1);
+            });
+            result = replaced;
         }
 
-        return results;
+        return (result, hadMatches);
     }
 }
