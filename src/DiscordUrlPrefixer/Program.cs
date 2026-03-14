@@ -68,10 +68,6 @@ public class Program
         if (!hadMatches)
             return;
 
-        var authorName = (message.Author as SocketGuildUser)?.DisplayName
-                         ?? message.Author.GlobalName
-                         ?? message.Author.Username;
-
         try
         {
             await message.DeleteAsync();
@@ -82,6 +78,6 @@ public class Program
             return;
         }
 
-        await message.Channel.SendMessageAsync($"**{authorName}:** {transformedMessage}");
+        await message.Channel.SendMessageAsync($"<@{message.Author.Id}>: {transformedMessage}", allowedMentions: AllowedMentions.None);
     }
 }
