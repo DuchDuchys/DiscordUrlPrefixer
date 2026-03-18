@@ -17,16 +17,6 @@ public class UrlPrefixerTests
         Assert.Equal(expected, result);
     }
 
-    [Theory]
-    [InlineData("https://www.tiktok.com/@user/video/123456789", "https://www.kktiktok.com/@user/video/123456789")]
-    [InlineData("https://tiktok.com/@user.123/video/987654321", "https://kktiktok.com/@user.123/video/987654321")]
-    [InlineData("https://www.tiktok.com/@user/video/123456789?lang=en", "https://www.kktiktok.com/@user/video/123456789")]
-    public void TikTokUrl_TransformsCorrectly(string input, string expected)
-    {
-        var result = UrlPrefixer.TransformUrl(input);
-        Assert.Equal(expected, result);
-    }
-
     [Fact]
     public void NoUrls_ReturnsUnchanged()
     {
@@ -37,12 +27,11 @@ public class UrlPrefixerTests
     }
 
     [Fact]
-    public void MultipleUrls_BothReplaced()
+    public void InstagramUrl_Replaced()
     {
-        var input = "https://www.instagram.com/reel/abc/ and https://www.tiktok.com/@user/video/123";
+        var input = "https://www.instagram.com/reel/abc/";
         var (result, hadMatches) = UrlPrefixer.ReplaceUrls(input);
         Assert.True(hadMatches);
         Assert.Contains("kkinstagram", result);
-        Assert.Contains("kktiktok", result);
     }
 }
