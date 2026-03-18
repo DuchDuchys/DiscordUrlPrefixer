@@ -1,36 +1,41 @@
-using System.Text.RegularExpressions;
-
 namespace DiscordUrlPrefixer;
 
-public static partial class UrlPrefixer
+public static class UrlPrefixer
 {
-    // Matches Instagram URLs: /reel/, /reels/, /p/, /tv/
-    [GeneratedRegex(@"https?://(?:www\.)?instagram\.com/(?:reel|reels|p|tv)/[\w-]+/?[^\s]*", RegexOptions.IgnoreCase)]
-    private static partial Regex InstagramPattern();
-
-    // Matches TikTok URLs: /@user/video/id
-    [GeneratedRegex(@"https?://(?:www\.)?tiktok\.com/@[\w.-]+/video/\d+[^\s]*", RegexOptions.IgnoreCase)]
-    private static partial Regex TikTokPattern();
-
-    // Captures the scheme + optional www. prefix, then the domain
-    [GeneratedRegex(@"^(https?://(?:www\.)?)")]
-    private static partial Regex SchemePrefix();
+    private static readonly Dictionary<string, string> DomainMappings = new(StringComparer.OrdinalIgnoreCase)
+    {
+        { "instagram.com", "kkinstagram.com" },
+        { "www.instagram.com", "www.kkinstagram.com" },
+        { "tiktok.com", "kktiktok.com" },
+        { "www.tiktok.com", "www.kktiktok.com" }
+    };
 
     public static (string TransformedMessage, bool HadMatches) ReplaceUrls(string message)
     {
-        var hadMatches = false;
-        var result = message;
+        var transformed = message.Split(' ').Select(TransformWord).ToList();
+        var hadMatches = transformed.Any(t => t.Changed);
+        return (string.Join(" ", transformed.Select(t => t.Transformed)), hadMatches);
+    }
 
-        foreach (var pattern in new[] { InstagramPattern(), TikTokPattern() })
+    private static (string Transformed, bool Changed) TransformWord(string word)
+    {
+        if (word.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+            word.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
         {
-            var replaced = pattern.Replace(result, match =>
-            {
-                hadMatches = true;
-                return SchemePrefix().Replace(match.Value, "$1kk", 1);
-            });
-            result = replaced;
+            var result = TransformUrl(word);
+            return (Transformed: result, Changed: result != word);
         }
+        return (Transformed: word, Changed: false);
+    }
 
-        return (result, hadMatches);
+    public static string TransformUrl(string url)
+    {
+        var uri = new Uri(url);
+        var baseUrl = uri.GetLeftPart(UriPartial.Path);
+        if (DomainMappings.TryGetValue(uri.Host, out var mappedDomain))
+        {
+            return baseUrl.Replace(uri.Host, mappedDomain, StringComparison.OrdinalIgnoreCase);
+        }
+        return baseUrl;
     }
 }
