@@ -27,9 +27,9 @@ public class UrlPrefixerTests
     }
 
     [Fact]
-    public void InstagramUrl_Replaced()
+    public void MultipleInstagramLinks_Replaced()
     {
-        var input = "https://www.instagram.com/reel/abc/";
+        var input = "https://www.instagram.com/reel/abc/ https://www.instagram.com/p/xyz/";
         var (result, hadMatches) = UrlPrefixer.ReplaceUrls(input);
         Assert.True(hadMatches);
         Assert.Contains("kkinstagram", result);
