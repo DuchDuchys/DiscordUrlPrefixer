@@ -6,8 +6,6 @@ public static class UrlPrefixer
     {
         { "instagram.com", "kkinstagram.com" },
         { "www.instagram.com", "www.kkinstagram.com" },
-        { "tiktok.com", "kktiktok.com" },
-        { "www.tiktok.com", "www.kktiktok.com" }
     };
 
     public static (string TransformedMessage, bool HadMatches) ReplaceUrls(string message)
