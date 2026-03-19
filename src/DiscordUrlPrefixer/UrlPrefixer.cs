@@ -26,14 +26,14 @@ public static class UrlPrefixer
         return (Transformed: word, Changed: false);
     }
 
-    public static string TransformUrl(string url)
+   public static string TransformUrl(string url)
+{
+    var uri = new Uri(url);
+    if (DomainMappings.TryGetValue(uri.Host, out var mappedDomain))
     {
-        var uri = new Uri(url);
         var baseUrl = uri.GetLeftPart(UriPartial.Path);
-        if (DomainMappings.TryGetValue(uri.Host, out var mappedDomain))
-        {
-            return baseUrl.Replace(uri.Host, mappedDomain, StringComparison.OrdinalIgnoreCase);
-        }
-        return baseUrl;
+        return baseUrl.Replace(uri.Host, mappedDomain, StringComparison.OrdinalIgnoreCase);
     }
+    return url; // ← return the original, untouched URL
+}
 }
