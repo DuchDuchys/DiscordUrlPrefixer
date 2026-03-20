@@ -37,10 +37,10 @@ public class UrlPrefixerTests
 
     [Theory]
     [InlineData("https://x.com/AndreasSteno/status/2034357635256922473", "https://girlcockx.com/AndreasSteno/status/2034357635256922473")]
-    [InlineData("https://www.x.com/AndreasSteno/status/2034357635256922473", "https://www.girlcockx.com/AndreasSteno/status/2034357635256922473")]
+    [InlineData("https://www.x.com/AndreasSteno/status/2034357635256922473", "https://girlcockx.com/AndreasSteno/status/2034357635256922473")]
     [InlineData("https://x.com/user/status/123?param=value", "https://girlcockx.com/user/status/123")]
     [InlineData("https://twitter.com/AndreasSteno/status/2034357635256922473", "https://girlcockx.com/AndreasSteno/status/2034357635256922473")]
-    [InlineData("https://www.twitter.com/AndreasSteno/status/2034357635256922473", "https://www.girlcockx.com/AndreasSteno/status/2034357635256922473")]
+    [InlineData("https://www.twitter.com/AndreasSteno/status/2034357635256922473", "https://girlcockx.com/AndreasSteno/status/2034357635256922473")]
     [InlineData("https://twitter.com/user/status/123?param=value", "https://girlcockx.com/user/status/123")]
     public void TwitterXUrl_TransformsCorrectly(string input, string expected)
     {
